@@ -1,34 +1,39 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+
+import EmojiList from "./emojis.json"; // json - useEffect
 
 //create your first component
 const Home = () => {
 
-	const [ counter, setCounter ] = useState(0);
+	const initialEmojis = EmojiList.emojis;
 
-	const setup = () => { // onload
-		const timer = setInterval(() => {
-			setCounter(counter + 1)
-		}, 1000)
+	const [emojis, setEmojis] = useState(initialEmojis);
+	
+	const [search, setSearch] = useState("");
 
-		return () => clearInterval(timer);
+
+	const renderEmojis = () => {
+		if (search == "") {
+			return emojis.map((emoji, idx) => {
+				return <p key={idx}>{emoji.emoji} {emoji.name}</p> 
+			})
+		}
+		return emojis
+			.filter((emoji) =>  emoji.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) )
+			.map((emoji, idx) => {
+				return <p key={idx}>{emoji.emoji} {emoji.name}</p> 
+			})
 	}
-
-	useEffect(setup, [counter])
 
 	return (
 		<div className="text-center d-flex flex-column my-auto">
-			<button className="btn btn-success"
-				onClick={() => setCounter(state => state + 1)}
-			>
-				Increment
-			</button>
-			<h1>Counter {counter}</h1>
-			<button className="btn btn-danger"
-				onClick={() => setCounter(counter - 1)}
-			>
-				Decrement
-			</button>
+
+			<div className="my-4">
+				<h3>Search</h3>
+				<input type="text" placeholder="search" value={search} onChange={(evt) => setSearch(evt.target.value)} />
+			</div>
+			{renderEmojis()}
 		</div>
 	);
 };
